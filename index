@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DPVA Donor Research</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #0f1117;
+    --surface:   #181c27;
+    --surface2:  #1f2435;
+    --border:    #2a3050;
+    --accent:    #4f7cff;
+    --accent2:   #7c4fff;
+    --green:     #3ecf8e;
+    --red:       #ff4f6d;
+    --yellow:    #ffc14f;
+    --text:      #e8eaf0;
+    --muted:     #7a82a0;
+    --mono:      'DM Mono', monospace;
+    --sans:      'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .logo span { color: var(--muted); }
+  .api-status {
+    font-family: var(--mono);
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    margin-left: auto;
+  }
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--muted);
+    transition: background 0.3s;
+  }
+  .status-dot.ok  { background: var(--green); box-shadow: 0 0 6px var(--green); }
+  .status-dot.err { background: var(--red); }
+
+  /* ── Layout ── */
+  .app { display: flex; height: calc(100vh - 56px); }
+
+  /* ── Left Panel ── */
+  .panel-left {
+    width: 380px;
+    min-width: 320px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+  }
+
+  .search-box {
+    padding: 20px 20px 0;
+  }
+  .search-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .search-wrap {
+    position: relative;
+  }
+  .search-wrap input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    padding: 10px 40px 10px 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-wrap input:focus { border-color: var(--accent); }
+  .search-wrap input::placeholder { color: var(--muted); }
+  .search-icon {
+    position: absolute;
+    right: 12px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 14px;
+    pointer-events: none;
+  }
+
+  .search-filters {
+    display: flex;
+    gap: 8px;
+    padding: 10px 20px 16px;
+  }
+  .filter-select {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 12px;
+    padding: 6px 10px;
+    outline: none;
+    cursor: pointer;
+  }
+  .filter-select:focus { border-color: var(--accent); }
+
+  .results-header {
+    padding: 0 20px 10px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .results-list {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .donor-card {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+  }
+  .donor-card:hover { background: var(--surface2); }
+  .donor-card.active {
+    background: var(--surface2);
+    border-left: 3px solid var(--accent);
+    padding-left: 17px;
+  }
+
+  .donor-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+  .donor-meta {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .donor-stats {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .stat-pill {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .stat-pill.amount { color: var(--green); }
+  .party-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-left: auto;
+  }
+  .party-D { background: rgba(79,124,255,0.15); color: var(--accent); }
+  .party-R { background: rgba(255,79,109,0.15); color: var(--red); }
+  .party-I { background: rgba(255,193,79,0.15); color: var(--yellow); }
+  .party-none { background: var(--surface2); color: var(--muted); }
+
+  .empty-state {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .empty-icon { font-size: 32px; margin-bottom: 12px; opacity: 0.4; }
+
+  /* ── Right Panel ── */
+  .panel-right {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+    background: var(--bg);
+  }
+
+  .welcome {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--muted);
+    text-align: center;
+    padding: 40px;
+  }
+  .welcome-icon { font-size: 48px; margin-bottom: 20px; opacity: 0.3; }
+  .welcome h2 { font-size: 18px; color: var(--text); margin-bottom: 8px; font-weight: 400; }
+  .welcome p { font-size: 13px; max-width: 320px; }
+
+  /* ── Donor Detail ── */
+  .donor-detail { padding: 28px 32px; max-width: 960px; }
+
+  .detail-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .detail-avatar {
+    width: 52px; height: 52px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 600;
+    color: white;
+    flex-shrink: 0;
+  }
+  .detail-name { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+  .detail-sub { font-size: 13px; color: var(--muted); }
+  .detail-badges { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .badge.has { border-color: var(--accent); color: var(--accent); background: rgba(79,124,255,0.08); }
+  .badge.recurring { border-color: var(--green); color: var(--green); background: rgba(62,207,142,0.08); }
+
+  /* ── Stat Cards ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .stat-card-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .stat-card-value {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+    font-family: var(--mono);
+  }
+  .stat-card-value.green { color: var(--green); }
+  .stat-card-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+    font-family: var(--mono);
+  }
+
+  /* ── Info Grid ── */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .info-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+  }
+  .info-block-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .info-row:last-child { border-bottom: none; }
+  .info-row-label { color: var(--muted); }
+  .info-row-value { color: var(--text); font-family: var(--mono); font-size: 12px; text-align: right; }
+
+  /* ── Contributions Section ── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .section-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .section-controls { display: flex; gap: 8px; }
+  .ctrl-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .ctrl-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .ctrl-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(79,124,255,0.1); }
+
+  /* ── Source Breakdown ── */
+  .source-breakdown {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .source-chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    min-width: 80px;
+  }
+  .source-chip:hover { border-color: var(--accent); }
+  .source-chip.active { border-color: var(--accent); background: rgba(79,124,255,0.1); }
+  .source-chip-name { font-family: var(--mono); font-size: 11px; color: var(--accent); font-weight: 500; }
+  .source-chip-count { font-size: 11px; color: var(--muted); }
+  .source-chip-total { font-family: var(--mono); font-size: 12px; color: var(--green); }
+
+  /* ── Contributions Table ── */
+  .contrib-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .contrib-table th {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+  }
+  .contrib-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid rgba(42,48,80,0.5);
+    vertical-align: middle;
+  }
+  .contrib-table tr:hover td { background: var(--surface); }
+  .contrib-table tr:last-child td { border-bottom: none; }
+
+  .source-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+  .tag-AB    { background: rgba(124,79,255,0.15); color: var(--accent2); }
+  .tag-FEC   { background: rgba(255,79,109,0.15); color: var(--red); }
+  .tag-VA_CF { background: rgba(62,207,142,0.15); color: var(--green); }
+  .tag-NGP   { background: rgba(255,193,79,0.15); color: var(--yellow); }
+
+  .amount-cell { font-family: var(--mono); color: var(--green); }
+  .recurring-icon { color: var(--green); font-size: 12px; }
+  .muted-cell { color: var(--muted); font-family: var(--mono); font-size: 12px; }
+
+  /* ── Loading ── */
+  .loading {
+    padding: 40px;
+    text-align: center;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner {
+    display: inline-block;
+    width: 16px; height: 16px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">DPVA <span>//</span> Donor Research</div>
+  <div class="api-status">
+    <div class="status-dot" id="statusDot"></div>
+    <span id="statusText">connecting...</span>
+  </div>
+</header>
+
+<div class="app">
+
+  <!-- Left Panel: Search + Results -->
+  <div class="panel-left">
+    <div class="search-box">
+      <div class="search-label">Search Donors</div>
+      <div class="search-wrap">
+        <input type="text" id="searchInput"
+          placeholder="Name, email, or VAN ID..."
+          autocomplete="off" spellcheck="false">
+        <span class="search-icon">⌕</span>
+      </div>
+    </div>
+    <div class="search-filters">
+      <select class="filter-select" id="stateFilter">
+        <option value="">All States</option>
+        <option value="VA" selected>Virginia</option>
+        <option value="">All States</option>
+      </select>
+      <select class="filter-select" id="partyFilter">
+        <option value="">All Parties</option>
+        <option value="D">Democrat</option>
+        <option value="R">Republican</option>
+        <option value="I">Independent</option>
+      </select>
+    </div>
+    <div class="results-header" id="resultsHeader">— enter search above —</div>
+    <div class="results-list" id="resultsList">
+      <div class="empty-state">
+        <div class="empty-icon">🔍</div>
+        Search by name, email address, or VAN ID
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Panel: Donor Detail -->
+  <div class="panel-right" id="detailPanel">
+    <div class="welcome">
+      <div class="welcome-icon">📋</div>
+      <h2>Select a donor to view details</h2>
+      <p>Search for a donor on the left and click their name to see full contribution history across all sources.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API = 'http://localhost:5000';
+let searchTimer = null;
+let activeSource = null;
+let allContributions = [];
+let currentDonorId = null;
+
+// ── API Status ─────────────────────────────────────────────────
+async function checkHealth() {
+  try {
+    const r = await fetch(`${API}/health`);
+    const d = await r.json();
+    if (d.status === 'ok') {
+      document.getElementById('statusDot').className = 'status-dot ok';
+      document.getElementById('statusText').textContent =
+        `${d.total_donors.toLocaleString()} donors`;
+    } else { throw new Error(); }
+  } catch {
+    document.getElementById('statusDot').className = 'status-dot err';
+    document.getElementById('statusText').textContent = 'API offline';
+  }
+}
+checkHealth();
+
+// ── Search ─────────────────────────────────────────────────────
+document.getElementById('searchInput').addEventListener('input', e => {
+  clearTimeout(searchTimer);
+  const q = e.target.value.trim();
+  if (q.length < 2) {
+    document.getElementById('resultsHeader').textContent = '— enter search above —';
+    document.getElementById('resultsList').innerHTML =
+      '<div class="empty-state"><div class="empty-icon">🔍</div>Search by name, email address, or VAN ID</div>';
+    return;
+  }
+  searchTimer = setTimeout(() => runSearch(q), 350);
+});
+
+document.getElementById('stateFilter').addEventListener('change', () => {
+  const q = document.getElementById('searchInput').value.trim();
+  if (q.length >= 2) runSearch(q);
+});
+document.getElementById('partyFilter').addEventListener('change', () => {
+  const q = document.getElementById('searchInput').value.trim();
+  if (q.length >= 2) runSearch(q);
+});
+
+async function runSearch(q) {
+  const state = document.getElementById('stateFilter').value;
+  const party = document.getElementById('partyFilter').value;
+  document.getElementById('resultsList').innerHTML =
+    '<div class="loading"><span class="spinner"></span>Searching...</div>';
+
+  let url = `${API}/search?q=${encodeURIComponent(q)}&limit=50`;
+  if (state) url += `&state=${state}`;
+  if (party) url += `&party=${party}`;
+
+  try {
+    const r = await fetch(url);
+    const d = await r.json();
+    renderResults(d.results || [], d.count);
+  } catch {
+    document.getElementById('resultsList').innerHTML =
+      '<div class="empty-state"><div class="empty-icon">⚠️</div>API error — is the server running?</div>';
+  }
+}
+
+function renderResults(donors, count) {
+  document.getElementById('resultsHeader').textContent =
+    count === 0 ? 'No results' : `${count} result${count !== 1 ? 's' : ''}`;
+
+  if (donors.length === 0) {
+    document.getElementById('resultsList').innerHTML =
+      '<div class="empty-state"><div class="empty-icon">👤</div>No donors found</div>';
+    return;
+  }
+
+  document.getElementById('resultsList').innerHTML = donors.map(d => {
+    const party = d.Party || '';
+    const partyClass = party ? `party-${party}` : 'party-none';
+    const partyLabel = party || '—';
+    const total = d.TotalAmount ? `$${Number(d.TotalAmount).toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:0})}` : '$0';
+    const loc = [d.City, d.State].filter(Boolean).join(', ') || '—';
+    const recurring = d.HasRecurring ? ' 🔄' : '';
+    return `
+      <div class="donor-card" data-id="${d.DonorID}" onclick="loadDonor(${d.DonorID})">
+        <div class="donor-name">${esc(d.FirstName)} ${esc(d.LastName)}${recurring}</div>
+        <div class="donor-meta">${esc(loc)}</div>
+        <div class="donor-stats">
+          <span class="stat-pill amount">${total}</span>
+          <span class="stat-pill">${d.ContributionCount} gift${d.ContributionCount !== 1 ? 's' : ''}</span>
+          <span class="party-badge ${partyClass}">${partyLabel}</span>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── Donor Detail ───────────────────────────────────────────────
+async function loadDonor(donorId) {
+  currentDonorId = donorId;
+  activeSource = null;
+
+  // Highlight active card
+  document.querySelectorAll('.donor-card').forEach(c => {
+    c.classList.toggle('active', c.dataset.id == donorId);
+  });
+
+  document.getElementById('detailPanel').innerHTML =
+    '<div class="loading" style="padding:60px"><span class="spinner"></span>Loading donor...</div>';
+
+  try {
+    const [donorRes, contribRes] = await Promise.all([
+      fetch(`${API}/donor/${donorId}`),
+      fetch(`${API}/donor/${donorId}/contributions`)
+    ]);
+    const donor = await donorRes.json();
+    const contribs = await contribRes.json();
+    allContributions = contribs.contributions || [];
+    renderDonorDetail(donor, contribs);
+  } catch (e) {
+    document.getElementById('detailPanel').innerHTML =
+      '<div class="loading">Error loading donor data.</div>';
+  }
+}
+
+function renderDonorDetail(donor, contribs) {
+  const initials = ((donor.FirstName||'?')[0] + (donor.LastName||'?')[0]).toUpperCase();
+  const total = fmt(donor.TotalAmount);
+  const max   = fmt(donor.MaxAmount);
+  const avg   = fmt(donor.AvgAmount);
+  const loc   = [donor.Address, donor.City, donor.State, donor.ZIP].filter(Boolean).join(', ');
+  const party = donor.Party || '';
+  const partyClass = party ? `party-${party}` : 'party-none';
+
+  // Source badges
+  const badges = [
+    donor.HasABContrib   ? '<span class="badge has">ActBlue</span>' : '',
+    donor.HasFedContrib  ? '<span class="badge has">FEC</span>' : '',
+    donor.HasStateContrib? '<span class="badge has">VA Campaign Finance</span>' : '',
+    donor.HasDPVAContrib ? '<span class="badge has">NGP/DPVA</span>' : '',
+    donor.HasRecurring   ? '<span class="badge recurring">🔄 Recurring</span>' : '',
+  ].join('');
+
+  // Source breakdown chips
+  const breakdown = contribs.source_breakdown || {};
+  const chips = Object.entries(breakdown).map(([src, info]) => `
+    <div class="source-chip ${activeSource === src ? 'active' : ''}"
+         onclick="filterSource('${src}')">
+      <div class="source-chip-name">${src}</div>
+      <div class="source-chip-count">${info.count} gifts</div>
+      <div class="source-chip-total">$${Math.round(info.total).toLocaleString()}</div>
+    </div>`).join('');
+
+  const allChip = `
+    <div class="source-chip ${!activeSource ? 'active' : ''}" onclick="filterSource(null)">
+      <div class="source-chip-name">ALL</div>
+      <div class="source-chip-count">${contribs.contribution_count} gifts</div>
+      <div class="source-chip-total">${total}</div>
+    </div>`;
+
+  document.getElementById('detailPanel').innerHTML = `
+    <div class="donor-detail">
+
+      <div class="detail-header">
+        <div class="detail-avatar">${initials}</div>
+        <div>
+          <div class="detail-name">${esc(donor.FirstName)} ${esc(donor.LastName)}
+            <span class="party-badge ${partyClass}" style="font-size:12px;margin-left:10px;">${party || '—'}</span>
+          </div>
+          <div class="detail-sub">${esc(loc)}</div>
+          <div class="detail-badges">${badges}</div>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card-label">Total Given</div>
+          <div class="stat-card-value green">${total}</div>
+          <div class="stat-card-sub">${contribs.contribution_count} contributions</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Largest Gift</div>
+          <div class="stat-card-value">${max}</div>
+          <div class="stat-card-sub">avg ${avg}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">First Gift</div>
+          <div class="stat-card-value" style="font-size:16px">${donor.FirstContribDate||'—'}</div>
+          <div class="stat-card-sub">last ${donor.LastContribDate||'—'}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">VAN Match</div>
+          <div class="stat-card-value" style="font-size:14px;color:${donor.Identification_Number?'var(--green)':'var(--muted)'}">${donor.Identification_Number||'Unmatched'}</div>
+          <div class="stat-card-sub">VASup: ${donor.VASup||'—'}</div>
+        </div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-block">
+          <div class="info-block-title">Contact</div>
+          <div class="info-row"><span class="info-row-label">Email</span><span class="info-row-value">${esc(donor.PersonalEmail||'—')}</span></div>
+          <div class="info-row"><span class="info-row-label">Phone</span><span class="info-row-value">${esc(donor.PreferredPhone||'—')}</span></div>
+          <div class="info-row"><span class="info-row-label">Last Recipient</span><span class="info-row-value">${esc(donor.LastRecipient||'—')}</span></div>
+        </div>
+        <div class="info-block">
+          <div class="info-block-title">Voter File</div>
+          <div class="info-row"><span class="info-row-label">Party</span><span class="info-row-value">${donor.LikelyParty||'—'}</span></div>
+          <div class="info-row"><span class="info-row-label">VA Support</span><span class="info-row-value">${donor.VASup||'—'}</span></div>
+          <div class="info-row"><span class="info-row-label">Last Source</span><span class="info-row-value">${donor.LastSource||'—'}</span></div>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <div class="section-title">Contribution History</div>
+        <div class="section-controls">
+          <button class="ctrl-btn" onclick="sortContribs('date')">By Date</button>
+          <button class="ctrl-btn" onclick="sortContribs('amount')">By Amount</button>
+        </div>
+      </div>
+
+      <div class="source-breakdown">${allChip}${chips}</div>
+
+      <div id="contribTableWrap"></div>
+    </div>`;
+
+  renderContribTable(allContributions);
+}
+
+function renderContribTable(contribs) {
+  if (!contribs.length) {
+    document.getElementById('contribTableWrap').innerHTML =
+      '<div class="empty-state">No contributions found</div>';
+    return;
+  }
+  const rows = contribs.map(c => `
+    <tr>
+      <td class="muted-cell">${c.ContributionDate||'—'}</td>
+      <td class="amount-cell">$${Number(c.Amount||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+      <td><span class="source-tag tag-${c.Source}">${c.Source}</span></td>
+      <td>${esc(c.Recipient||'—')}</td>
+      <td class="muted-cell">${c.AccountType||'—'}</td>
+      <td class="muted-cell">${c.Cycle||'—'}</td>
+      <td>${c.IsRecurring ? '<span class="recurring-icon">🔄</span>' : ''}</td>
+      <td class="muted-cell">${esc(c.FundraisingPage||'—')}</td>
+    </tr>`).join('');
+
+  document.getElementById('contribTableWrap').innerHTML = `
+    <table class="contrib-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Amount</th>
+          <th>Source</th>
+          <th>Recipient</th>
+          <th>Account</th>
+          <th>Cycle</th>
+          <th>Recur</th>
+          <th>Page</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+function filterSource(src) {
+  activeSource = src;
+  // Update chips
+  document.querySelectorAll('.source-chip').forEach(c => {
+    const chipSrc = c.querySelector('.source-chip-name').textContent;
+    c.classList.toggle('active',
+      (src === null && chipSrc === 'ALL') || chipSrc === src);
+  });
+  const filtered = src ? allContributions.filter(c => c.Source === src) : allContributions;
+  renderContribTable(filtered);
+}
+
+function sortContribs(by) {
+  const filtered = activeSource ? allContributions.filter(c => c.Source === activeSource) : allContributions;
+  if (by === 'amount') {
+    filtered.sort((a, b) => (b.Amount||0) - (a.Amount||0));
+  } else {
+    filtered.sort((a, b) => (b.ContributionDate||'').localeCompare(a.ContributionDate||''));
+  }
+  renderContribTable(filtered);
+}
+
+// ── Utilities ──────────────────────────────────────────────────
+function fmt(n) {
+  if (!n) return '$0';
+  return '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:0});
+}
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
