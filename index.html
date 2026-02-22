@@ -148,7 +148,7 @@ td.muted { color: #888; font-size: 12px; }
       <input type="text" id="nameSearch" placeholder="Last, first, or both...">
     </div>
     <div class="filter-group">
-      <div class="filter-label">City / Locality</div>
+      <div class="filter-label">City</div>
       <input type="text" id="citySearch" placeholder="e.g. Norfolk, Richmond...">
     </div>
     <div class="filter-group">
@@ -201,21 +201,25 @@ td.muted { color: #888; font-size: 12px; }
       </div>
     </div>
     <div class="filter-group">
-      <div class="filter-label">VAN Match Status</div>
-      <select id="matchFilter">
-        <option value="">All Donors</option>
-        <option value="matched">Matched to VAN only</option>
-        <option value="unmatched">Unmatched only</option>
+      <div class="filter-label">County (multi-select)</div>
+      <select id="countyFilter" multiple size="5" style="height:100px">
       </select>
+      <small style="color:#888;font-size:11px">Ctrl+click to select multiple</small>
     </div>
     <div class="filter-group">
-      <div class="filter-label">Recurring Donors</div>
-      <select id="recurFilter">
-        <option value="">All Donors</option>
-        <option value="yes">Recurring only</option>
-        <option value="no">Non-recurring only</option>
-      </select>
+      <div class="filter-label">VASup Score</div>
+      <div class="range-row">
+        <input type="number" id="minVASup" placeholder="Min" min="0" max="100">
+        <span>to</span>
+        <input type="number" id="maxVASup" placeholder="Max" min="0" max="100">
+      </div>
     </div>
+    <div class="filter-group">
+      <label class="check-row" style="margin-top:4px">
+        <input type="checkbox" id="hasStateID"> Has State ID only
+      </label>
+    </div>
+
 
     <button class="btn btn-primary" onclick="runSearch()">Search</button>
     <button class="btn btn-secondary" onclick="clearFilters()">Clear Filters</button>
@@ -249,7 +253,7 @@ td.muted { color: #888; font-size: 12px; }
             <th onclick="sortTable('LastContribDate')">Last Gift <span class="sort-arrow">&#8645;</span></th>
             <th>Sources</th>
             <th onclick="sortTable('Party')">Party <span class="sort-arrow">&#8645;</span></th>
-            <th>VAN ID</th>
+            <th onclick="sortTable('Identification_Number')">State ID <span class="sort-arrow">&#8645;</span></th>
           </tr>
         </thead>
         <tbody id="tableBody"></tbody>
@@ -295,6 +299,23 @@ function checkHealth() {
 }
 checkHealth();
 
+// Load county list into multi-select
+function loadCounties() {
+  fetch(API + '/counties')
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      var sel = document.getElementById('countyFilter');
+      (d.counties || []).forEach(function(c) {
+        var opt = document.createElement('option');
+        opt.value = c;
+        opt.textContent = c.replace(' COUNTY', '').replace(' CITY', '');
+        sel.appendChild(opt);
+      });
+    })
+    .catch(function() { console.warn('Could not load county list'); });
+}
+loadCounties();
+
 function runSearch() {
   var name  = document.getElementById('nameSearch').value.trim();
   var city  = document.getElementById('citySearch').value.trim().toUpperCase();
@@ -306,12 +327,20 @@ function runSearch() {
   var maxGifts = parseInt(document.getElementById('maxGifts').value)    || null;
   var minMax   = parseFloat(document.getElementById('minMax').value)    || null;
   var maxMax   = parseFloat(document.getElementById('maxMax').value)    || null;
-  var matchF   = document.getElementById('matchFilter').value;
-  var recurF   = document.getElementById('recurFilter').value;
+  var matchF   = '';  // replaced by hasStateID checkbox
+  var recurF   = '';  // recurring filter removed
   var srcAB  = document.getElementById('srcAB').checked;
   var srcFEC = document.getElementById('srcFEC').checked;
   var srcVA  = document.getElementById('srcVA').checked;
   var srcNGP = document.getElementById('srcNGP').checked;
+  var minVASup = document.getElementById('minVASup').value;
+  var maxVASup = document.getElementById('maxVASup').value;
+  var hasStateID = document.getElementById('hasStateID').checked;
+  var selectedCounties = [];
+  var countySelect = document.getElementById('countyFilter');
+  for (var i = 0; i < countySelect.options.length; i++) {
+    if (countySelect.options[i].selected) { selectedCounties.push(countySelect.options[i].value); }
+  }
 
   if (!name && !city && !state && !party && minAmt === null && maxAmt === null &&
       minGifts === null && maxGifts === null && minMax === null && maxMax === null) {
@@ -337,8 +366,10 @@ function runSearch() {
   if (maxGifts !== null) browseUrl += '&max_gifts='  + maxGifts;
   if (minMax !== null)   browseUrl += '&min_max='    + minMax;
   if (maxMax !== null)   browseUrl += '&max_max='    + maxMax;
-  if (matchF)  browseUrl += '&matched='   + matchF;
-  if (recurF)  browseUrl += '&recurring=' + recurF;
+  if (minVASup) browseUrl += '&min_vasup=' + minVASup;
+  if (maxVASup) browseUrl += '&max_vasup=' + maxVASup;
+  if (hasStateID) browseUrl += '&has_stateid=yes';
+  selectedCounties.forEach(function(c) { browseUrl += '&county=' + encodeURIComponent(c); });
   browseUrl += '&src_ab='  + (srcAB  ? '1' : '0');
   browseUrl += '&src_fec=' + (srcFEC ? '1' : '0');
   browseUrl += '&src_va='  + (srcVA  ? '1' : '0');
@@ -422,7 +453,7 @@ function sortTable(col) {
     th.classList.remove('sorted');
     th.querySelector('.sort-arrow').innerHTML = '&#8645;';
   });
-  var cols = ['LastName', 'City', 'State', 'TotalAmount', 'ContributionCount', 'MaxAmount', 'LastContribDate', '', 'Party', ''];
+  var cols = ['LastName', 'City', 'State', 'TotalAmount', 'ContributionCount', 'MaxAmount', 'LastContribDate', '', 'Party', 'Identification_Number'];
   var idx = cols.indexOf(col);
   if (idx >= 0) {
     var th = document.querySelectorAll('thead th')[idx];
@@ -433,13 +464,14 @@ function sortTable(col) {
 }
 
 function clearFilters() {
-  ['nameSearch', 'citySearch', 'minAmount', 'maxAmount', 'minGifts', 'maxGifts', 'minMax', 'maxMax'].forEach(function(id) {
+  ['nameSearch', 'citySearch', 'minAmount', 'maxAmount', 'minGifts', 'maxGifts', 'minMax', 'maxMax', 'minVASup', 'maxVASup'].forEach(function(id) {
     document.getElementById(id).value = '';
   });
   document.getElementById('stateFilter').value = 'VA';
   document.getElementById('partyFilter').value = '';
-  document.getElementById('matchFilter').value = '';
-  document.getElementById('recurFilter').value = '';
+  document.getElementById('hasStateID').checked = false;
+  var countySelect = document.getElementById('countyFilter');
+  for (var i = 0; i < countySelect.options.length; i++) { countySelect.options[i].selected = false; }
   ['srcAB', 'srcFEC', 'srcVA', 'srcNGP'].forEach(function(id) { document.getElementById(id).checked = true; });
   currentResults = [];
   document.getElementById('donorTable').style.display = 'none';
