@@ -325,39 +325,35 @@ function runSearch() {
   document.getElementById('resultsSummary').textContent = 'Searching...';
   document.getElementById('resultsTotals').textContent = '';
 
-  var q = name || city || 'a';
-  var url = API + '/search?q=' + encodeURIComponent(q) + '&limit=500';
-  if (state) url += '&state=' + state;
-  if (party) url += '&party=' + party;
+  // Build browse URL with all filters pushed server-side
+  var browseUrl = API + '/browse?limit=500';
+  if (name)   browseUrl += '&name='       + encodeURIComponent(name);
+  if (city)   browseUrl += '&city='       + encodeURIComponent(city);
+  if (state)  browseUrl += '&state='      + encodeURIComponent(state);
+  if (party)  browseUrl += '&party='      + encodeURIComponent(party);
+  if (minAmt !== null)   browseUrl += '&min_amount=' + minAmt;
+  if (maxAmt !== null)   browseUrl += '&max_amount=' + maxAmt;
+  if (minGifts !== null) browseUrl += '&min_gifts='  + minGifts;
+  if (maxGifts !== null) browseUrl += '&max_gifts='  + maxGifts;
+  if (minMax !== null)   browseUrl += '&min_max='    + minMax;
+  if (maxMax !== null)   browseUrl += '&max_max='    + maxMax;
+  if (matchF)  browseUrl += '&matched='   + matchF;
+  if (recurF)  browseUrl += '&recurring=' + recurF;
+  browseUrl += '&src_ab='  + (srcAB  ? '1' : '0');
+  browseUrl += '&src_fec=' + (srcFEC ? '1' : '0');
+  browseUrl += '&src_va='  + (srcVA  ? '1' : '0');
+  browseUrl += '&src_ngp=' + (srcNGP ? '1' : '0');
 
-  fetch(url)
+  fetch(browseUrl)
     .then(function(r) { return r.json(); })
     .then(function(d) {
-      var donors = d.results || [];
-
-      if (city)            donors = donors.filter(function(x) { return (x.City || '').toUpperCase().indexOf(city) >= 0; });
-      if (minAmt !== null) donors = donors.filter(function(x) { return (x.TotalAmount || 0) >= minAmt; });
-      if (maxAmt !== null) donors = donors.filter(function(x) { return (x.TotalAmount || 0) <= maxAmt; });
-      if (minGifts !== null) donors = donors.filter(function(x) { return (x.ContributionCount || 0) >= minGifts; });
-      if (maxGifts !== null) donors = donors.filter(function(x) { return (x.ContributionCount || 0) <= maxGifts; });
-      if (minMax !== null) donors = donors.filter(function(x) { return (x.MaxAmount || 0) >= minMax; });
-      if (maxMax !== null) donors = donors.filter(function(x) { return (x.MaxAmount || 0) <= maxMax; });
-      if (matchF === 'matched')   donors = donors.filter(function(x) { return x.Identification_Number; });
-      if (matchF === 'unmatched') donors = donors.filter(function(x) { return !x.Identification_Number; });
-      if (recurF === 'yes') donors = donors.filter(function(x) { return x.HasRecurring; });
-      if (recurF === 'no')  donors = donors.filter(function(x) { return !x.HasRecurring; });
-      if (!(srcAB && srcFEC && srcVA && srcNGP)) {
-        donors = donors.filter(function(x) {
-          return (srcAB && x.HasABContrib) || (srcFEC && x.HasFedContrib) ||
-                 (srcVA && x.HasStateContrib) || (srcNGP && x.HasDPVAContrib);
-        });
-      }
-
-      currentResults = donors;
-      renderTable();
+      if (d.error) { throw new Error(d.error); }
+      currentResults = d.results || [];
+      renderTable(d.total_count);
     })
-    .catch(function() {
+    .catch(function(e) {
       document.getElementById('emptyMsg').textContent = 'Error connecting to API. Is run_api.py running?';
+      console.error(e);
     });
 }
 
@@ -365,7 +361,7 @@ document.querySelectorAll('input, select').forEach(function(el) {
   el.addEventListener('keydown', function(e) { if (e.key === 'Enter') runSearch(); });
 });
 
-function renderTable() {
+function renderTable(totalCount) {
   var sorted = currentResults.slice().sort(function(a, b) {
     var av = a[sortCol] != null ? a[sortCol] : '';
     var bv = b[sortCol] != null ? b[sortCol] : '';
@@ -378,7 +374,11 @@ function renderTable() {
   var totalGiving = currentResults.reduce(function(s, x) { return s + (x.TotalAmount || 0); }, 0);
   var totalGifts  = currentResults.reduce(function(s, x) { return s + (x.ContributionCount || 0); }, 0);
 
-  document.getElementById('resultsSummary').innerHTML = '<strong>' + currentResults.length.toLocaleString() + '</strong> donors found';
+  var shown = currentResults.length;
+  var total = totalCount || shown;
+  var summaryText = '<strong>' + shown.toLocaleString() + '</strong> donors';
+  if (total > shown) { summaryText += ' (showing ' + shown.toLocaleString() + ' of ' + total.toLocaleString() + ' total &mdash; refine filters to narrow results)'; }
+  document.getElementById('resultsSummary').innerHTML = summaryText;
   document.getElementById('resultsTotals').innerHTML  = 'Total giving: <b>' + fmt(totalGiving) + '</b> &nbsp;|&nbsp; Total gifts: <b>' + totalGifts.toLocaleString() + '</b>';
 
   if (!currentResults.length) {
