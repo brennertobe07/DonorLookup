@@ -6,123 +6,124 @@
 <title>DPVA Donor Research</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Inter', sans-serif; font-size: 14px; background: #f4f6f9; color: #1a1a2e; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; font-size: 14px; background: #f4f6f9; color: #1a1a2e; }
 
-  header { background: #1a3a6e; color: white; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
-  header h1 { font-size: 20px; font-weight: 600; }
-  header p  { font-size: 12px; opacity: 0.75; margin-top: 2px; }
-  .api-badge { font-size: 11px; padding: 4px 12px; border-radius: 12px; background: rgba(255,255,255,0.15); display: flex; align-items: center; gap: 6px; }
-  .dot { width: 7px; height: 7px; border-radius: 50%; background: #aaa; }
-  .dot.ok  { background: #4cdb8f; box-shadow: 0 0 5px #4cdb8f; }
-  .dot.err { background: #ff5f5f; }
+header { background: #1a3a6e; color: white; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+header h1 { font-size: 20px; font-weight: 600; }
+header p  { font-size: 12px; opacity: 0.75; margin-top: 2px; }
+.api-badge { font-size: 11px; padding: 4px 12px; border-radius: 12px; background: rgba(255,255,255,0.15); display: flex; align-items: center; gap: 6px; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: #aaa; }
+.dot.ok  { background: #4cdb8f; box-shadow: 0 0 5px #4cdb8f; }
+.dot.err { background: #ff5f5f; }
 
-  .layout { display: flex; min-height: calc(100vh - 64px); }
+.layout { display: flex; min-height: calc(100vh - 64px); }
 
-  .filter-panel { width: 290px; min-width: 270px; background: white; border-right: 1px solid #dde3ef; padding: 18px 16px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; }
-  .panel-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #6b7a99; padding-bottom: 8px; border-bottom: 2px solid #1a3a6e; }
-  .filter-group { display: flex; flex-direction: column; gap: 5px; }
-  .filter-label { font-size: 12px; font-weight: 500; color: #444; }
+.filter-panel { width: 290px; min-width: 270px; background: white; border-right: 1px solid #dde3ef; padding: 18px 16px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; }
+.panel-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #6b7a99; padding-bottom: 8px; border-bottom: 2px solid #1a3a6e; }
+.filter-group { display: flex; flex-direction: column; gap: 5px; }
+.filter-label { font-size: 12px; font-weight: 500; color: #444; }
 
-  input[type="text"], input[type="number"], select { width: 100%; padding: 7px 10px; border: 1px solid #cdd5e0; border-radius: 5px; font-family: 'Inter', sans-serif; font-size: 13px; color: #1a1a2e; background: #fafbfc; outline: none; transition: border-color 0.2s; }
-  input:focus, select:focus { border-color: #1a3a6e; background: white; }
-  .range-row { display: flex; gap: 6px; align-items: center; }
-  .range-row span { font-size: 12px; color: #888; }
-  .range-row input { width: 50%; }
+input[type="text"], input[type="number"], select { width: 100%; padding: 7px 10px; border: 1px solid #cdd5e0; border-radius: 5px; font-family: 'Inter', sans-serif; font-size: 13px; color: #1a1a2e; background: #fafbfc; outline: none; transition: border-color 0.2s; }
+input:focus, select:focus { border-color: #1a3a6e; background: white; }
+.range-row { display: flex; gap: 6px; align-items: center; }
+.range-row span { font-size: 12px; color: #888; }
+.range-row input { width: 50%; }
 
-  .btn { padding: 8px 14px; border-radius: 5px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; }
-  .btn-primary { background: #1a3a6e; color: white; width: 100%; }
-  .btn-primary:hover { background: #0f2654; }
-  .btn-secondary { background: #eef1f8; color: #1a3a6e; width: 100%; margin-top: 2px; }
-  .btn-secondary:hover { background: #dde3ef; }
-  .btn-sm { padding: 6px 12px; font-size: 12px; }
-  .btn-export { background: #1a7a4e; color: white; }
-  .btn-export:hover { background: #145f3c; }
-  .btn-print { background: #6b4ea8; color: white; }
-  .btn-print:hover { background: #533c84; }
+.btn { padding: 8px 14px; border-radius: 5px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; }
+.btn-primary { background: #1a3a6e; color: white; width: 100%; }
+.btn-primary:hover { background: #0f2654; }
+.btn-secondary { background: #eef1f8; color: #1a3a6e; width: 100%; margin-top: 2px; }
+.btn-secondary:hover { background: #dde3ef; }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn-export { background: #1a7a4e; color: white; }
+.btn-export:hover { background: #145f3c; }
+.btn-print { background: #6b4ea8; color: white; }
+.btn-print:hover { background: #533c84; }
 
-  .source-checks { display: flex; flex-direction: column; gap: 5px; }
-  .check-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #333; cursor: pointer; }
-  .check-row input { width: auto; cursor: pointer; }
+.source-checks { display: flex; flex-direction: column; gap: 5px; }
+.check-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #333; cursor: pointer; }
+.check-row input { width: auto; cursor: pointer; }
 
-  .main { flex: 1; padding: 18px 22px; display: flex; flex-direction: column; gap: 14px; overflow: hidden; }
-  .results-bar { background: white; border: 1px solid #dde3ef; border-radius: 8px; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
-  .results-summary { font-size: 13px; color: #444; }
-  .results-summary strong { color: #1a3a6e; font-size: 15px; }
-  .results-totals { font-size: 13px; color: #666; }
-  .results-totals span { font-weight: 600; color: #1a3a6e; }
-  .export-btns { display: flex; gap: 8px; }
+.main { flex: 1; padding: 18px 22px; display: flex; flex-direction: column; gap: 14px; overflow: hidden; }
+.results-bar { background: white; border: 1px solid #dde3ef; border-radius: 8px; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.results-summary { font-size: 13px; color: #444; }
+.results-summary strong { color: #1a3a6e; font-size: 15px; }
+.results-totals { font-size: 13px; color: #666; }
+.results-totals b { color: #1a3a6e; }
+.export-btns { display: flex; gap: 8px; }
 
-  .table-wrap { background: white; border: 1px solid #dde3ef; border-radius: 8px; overflow: auto; flex: 1; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  thead th { background: #1a3a6e; color: white; padding: 10px 12px; text-align: left; font-size: 11px; font-weight: 500; white-space: nowrap; cursor: pointer; user-select: none; position: sticky; top: 0; z-index: 10; }
-  thead th:hover { background: #0f2654; }
-  .sort-arrow { opacity: 0.5; margin-left: 4px; }
-  thead th.sorted .sort-arrow { opacity: 1; }
-  tbody tr { border-bottom: 1px solid #eef1f8; cursor: pointer; transition: background 0.1s; }
-  tbody tr:hover { background: #f0f4ff; }
-  tbody tr:last-child { border-bottom: none; }
-  td { padding: 8px 12px; vertical-align: middle; }
-  td.right { text-align: right; }
-  td.mono { font-family: 'Courier New', monospace; font-size: 12px; }
-  td.green { color: #1a7a4e; font-weight: 500; }
-  td.muted { color: #888; font-size: 12px; }
+.table-wrap { background: white; border: 1px solid #dde3ef; border-radius: 8px; overflow: auto; flex: 1; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th { background: #1a3a6e; color: white; padding: 10px 12px; text-align: left; font-size: 11px; font-weight: 500; white-space: nowrap; cursor: pointer; user-select: none; position: sticky; top: 0; z-index: 10; }
+thead th:hover { background: #0f2654; }
+.sort-arrow { opacity: 0.5; margin-left: 4px; }
+thead th.sorted .sort-arrow { opacity: 1; }
+tbody tr { border-bottom: 1px solid #eef1f8; cursor: pointer; transition: background 0.1s; }
+tbody tr:hover { background: #f0f4ff; }
+tbody tr:last-child { border-bottom: none; }
+td { padding: 8px 12px; vertical-align: middle; }
+td.right { text-align: right; }
+td.mono { font-family: 'Courier New', monospace; font-size: 12px; }
+td.green { color: #1a7a4e; font-weight: 500; }
+td.muted { color: #888; font-size: 12px; }
 
-  .party-pill { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
-  .party-D { background: #dbeafe; color: #1d4ed8; }
-  .party-R { background: #fee2e2; color: #b91c1c; }
-  .party-I { background: #fef9c3; color: #854d0e; }
-  .party-X { background: #f3f4f6; color: #6b7280; }
+.party-pill { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+.party-D { background: #dbeafe; color: #1d4ed8; }
+.party-R { background: #fee2e2; color: #b91c1c; }
+.party-I { background: #fef9c3; color: #854d0e; }
+.party-X { background: #f3f4f6; color: #6b7280; }
 
-  .source-tag { display: inline-block; padding: 2px 5px; border-radius: 3px; font-size: 10px; font-weight: 600; margin: 1px; }
-  .tag-AB    { background: #ede9fe; color: #6d28d9; }
-  .tag-FEC   { background: #fee2e2; color: #b91c1c; }
-  .tag-VA_CF { background: #d1fae5; color: #065f46; }
-  .tag-NGP   { background: #fef3c7; color: #92400e; }
+.source-tag { display: inline-block; padding: 2px 5px; border-radius: 3px; font-size: 10px; font-weight: 600; margin: 1px; }
+.tag-AB    { background: #ede9fe; color: #6d28d9; }
+.tag-FEC   { background: #fee2e2; color: #b91c1c; }
+.tag-VA_CF { background: #d1fae5; color: #065f46; }
+.tag-NGP   { background: #fef3c7; color: #92400e; }
 
-  .drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 200; }
-  .drawer-overlay.open { display: block; }
-  .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 600px; background: white; box-shadow: -4px 0 24px rgba(0,0,0,0.15); z-index: 201; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.25s ease; }
-  .drawer.open { transform: translateX(0); }
-  .drawer-header { background: #1a3a6e; color: white; padding: 18px 22px; display: flex; align-items: flex-start; justify-content: space-between; flex-shrink: 0; }
-  .drawer-name { font-size: 20px; font-weight: 600; }
-  .drawer-sub  { font-size: 13px; opacity: 0.75; margin-top: 3px; }
-  .drawer-close { background: rgba(255,255,255,0.15); border: none; color: white; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; }
-  .drawer-close:hover { background: rgba(255,255,255,0.3); }
-  .drawer-body { flex: 1; overflow-y: auto; padding: 18px 22px; }
+.drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 200; }
+.drawer-overlay.open { display: block; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 600px; background: white; box-shadow: -4px 0 24px rgba(0,0,0,0.15); z-index: 201; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.25s ease; }
+.drawer.open { transform: translateX(0); }
+.drawer-header { background: #1a3a6e; color: white; padding: 18px 22px; display: flex; align-items: flex-start; justify-content: space-between; flex-shrink: 0; }
+.drawer-name { font-size: 20px; font-weight: 600; }
+.drawer-sub  { font-size: 13px; opacity: 0.75; margin-top: 3px; }
+.drawer-close { background: rgba(255,255,255,0.15); border: none; color: white; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+.drawer-close:hover { background: rgba(255,255,255,0.3); }
+.drawer-body { flex: 1; overflow-y: auto; padding: 18px 22px; }
 
-  .stat-row { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
-  .stat-box { flex: 1; min-width: 90px; background: #f4f6f9; border-radius: 7px; padding: 11px 12px; text-align: center; }
-  .stat-box-val { font-size: 17px; font-weight: 600; color: #1a3a6e; }
-  .stat-box-val.green { color: #1a7a4e; }
-  .stat-box-label { font-size: 11px; color: #888; margin-top: 2px; }
+.stat-row { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+.stat-box { flex: 1; min-width: 90px; background: #f4f6f9; border-radius: 7px; padding: 11px 12px; text-align: center; }
+.stat-box-val { font-size: 17px; font-weight: 600; color: #1a3a6e; }
+.stat-box-val.green { color: #1a7a4e; }
+.stat-box-label { font-size: 11px; color: #888; margin-top: 2px; }
 
-  .info-section { margin-bottom: 16px; }
-  .info-section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #6b7a99; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 9px; }
-  .info-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .info-item-label { font-size: 11px; color: #888; }
-  .info-item-value { font-size: 13px; color: #222; font-weight: 500; margin-top: 1px; }
+.info-section { margin-bottom: 16px; }
+.info-section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #6b7a99; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 9px; }
+.info-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.info-item-label { font-size: 11px; color: #888; }
+.info-item-value { font-size: 13px; color: #222; font-weight: 500; margin-top: 1px; word-break: break-word; }
 
-  .source-filter-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
-  .src-btn { padding: 4px 11px; border-radius: 12px; font-size: 11px; font-weight: 600; cursor: pointer; border: 1px solid #cdd5e0; background: white; color: #555; transition: all 0.15s; }
-  .src-btn:hover { border-color: #1a3a6e; color: #1a3a6e; }
-  .src-btn.active { background: #1a3a6e; color: white; border-color: #1a3a6e; }
+.source-filter-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.src-btn { padding: 4px 11px; border-radius: 12px; font-size: 11px; font-weight: 600; cursor: pointer; border: 1px solid #cdd5e0; background: white; color: #555; transition: all 0.15s; }
+.src-btn:hover { border-color: #1a3a6e; color: #1a3a6e; }
+.src-btn.active { background: #1a3a6e; color: white; border-color: #1a3a6e; }
 
-  .contrib-mini { width: 100%; border-collapse: collapse; font-size: 12px; }
-  .contrib-mini th { background: #f4f6f9; padding: 6px 10px; text-align: left; font-size: 11px; color: #6b7a99; font-weight: 600; border-bottom: 1px solid #dde3ef; }
-  .contrib-mini td { padding: 6px 10px; border-bottom: 1px solid #f0f2f8; }
-  .contrib-mini tr:last-child td { border-bottom: none; }
-  .contrib-mini tr:hover td { background: #f8f9ff; }
+.contrib-mini { width: 100%; border-collapse: collapse; font-size: 12px; }
+.contrib-mini th { background: #f4f6f9; padding: 6px 10px; text-align: left; font-size: 11px; color: #6b7a99; font-weight: 600; border-bottom: 1px solid #dde3ef; }
+.contrib-mini td { padding: 6px 10px; border-bottom: 1px solid #f0f2f8; }
+.contrib-mini tr:last-child td { border-bottom: none; }
+.contrib-mini tr:hover td { background: #f8f9ff; }
 
-  .empty-msg, .loading-msg { padding: 48px; text-align: center; color: #888; font-size: 14px; }
+.empty-msg  { padding: 48px; text-align: center; color: #888; font-size: 14px; }
+.loading-msg { padding: 40px; text-align: center; color: #888; font-size: 13px; }
 
-  @media print {
-    header, .filter-panel, .export-btns, .drawer-overlay { display: none !important; }
-    .main { padding: 0; }
-    .table-wrap { border: none; overflow: visible; }
-    table { font-size: 11px; }
-    body { background: white; }
-  }
+@media print {
+  header, .filter-panel, .export-btns, .drawer-overlay { display: none !important; }
+  .main { padding: 0; }
+  .table-wrap { border: none; overflow: visible; }
+  table { font-size: 11px; }
+  body { background: white; }
+}
 </style>
 </head>
 <body>
@@ -141,6 +142,7 @@
 <div class="layout">
   <div class="filter-panel">
     <div class="panel-title">Search &amp; Filter</div>
+
     <div class="filter-group">
       <div class="filter-label">Name Search</div>
       <input type="text" id="nameSearch" placeholder="Last, first, or both...">
@@ -154,7 +156,6 @@
       <select id="stateFilter">
         <option value="">All States</option>
         <option value="VA" selected>Virginia</option>
-        <option value="">All States</option>
       </select>
     </div>
     <div class="filter-group">
@@ -215,6 +216,7 @@
         <option value="no">Non-recurring only</option>
       </select>
     </div>
+
     <button class="btn btn-primary" onclick="runSearch()">Search</button>
     <button class="btn btn-secondary" onclick="clearFilters()">Clear Filters</button>
   </div>
@@ -263,53 +265,56 @@
       <div class="drawer-name" id="drawerName">Loading...</div>
       <div class="drawer-sub"  id="drawerSub"></div>
     </div>
-    <button class="drawer-close" onclick="closeDrawer()">X</button>
+    <button class="drawer-close" onclick="closeDrawer()">&#10005;</button>
   </div>
-  <div class="drawer-body" id="drawerBody"><div class="loading-msg">Loading...</div></div>
+  <div class="drawer-body" id="drawerBody">
+    <div class="loading-msg">Loading...</div>
+  </div>
 </div>
 
 <script>
-const API = 'http://localhost:5000';
-let currentResults = [];
-let sortCol = 'TotalAmount';
-let sortDir = -1;
-let allDrawerContribs = [];
+var API = 'http://localhost:5000';
+var currentResults = [];
+var sortCol = 'TotalAmount';
+var sortDir = -1;
+var allDrawerContribs = [];
 
-async function checkHealth() {
-  try {
-    const r = await fetch(API + '/health');
-    const d = await r.json();
-    if (d.status === 'ok') {
-      document.getElementById('statusDot').className = 'dot ok';
-      document.getElementById('statusText').textContent = 'Connected — ' + d.total_donors.toLocaleString() + ' donors';
-    } else throw new Error();
-  } catch {
-    document.getElementById('statusDot').className = 'dot err';
-    document.getElementById('statusText').textContent = 'API Offline — start run_api.py';
-  }
+function checkHealth() {
+  fetch(API + '/health')
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.status === 'ok') {
+        document.getElementById('statusDot').className = 'dot ok';
+        document.getElementById('statusText').textContent = 'Connected - ' + d.total_donors.toLocaleString() + ' donors';
+      } else { throw new Error(); }
+    })
+    .catch(function() {
+      document.getElementById('statusDot').className = 'dot err';
+      document.getElementById('statusText').textContent = 'API Offline - start run_api.py';
+    });
 }
 checkHealth();
 
-async function runSearch() {
-  const name  = document.getElementById('nameSearch').value.trim();
-  const city  = document.getElementById('citySearch').value.trim().toUpperCase();
-  const state = document.getElementById('stateFilter').value;
-  const party = document.getElementById('partyFilter').value;
-  const minAmt   = parseFloat(document.getElementById('minAmount').value) || null;
-  const maxAmt   = parseFloat(document.getElementById('maxAmount').value) || null;
-  const minGifts = parseInt(document.getElementById('minGifts').value)    || null;
-  const maxGifts = parseInt(document.getElementById('maxGifts').value)    || null;
-  const minMax   = parseFloat(document.getElementById('minMax').value)    || null;
-  const maxMax   = parseFloat(document.getElementById('maxMax').value)    || null;
-  const matchF   = document.getElementById('matchFilter').value;
-  const recurF   = document.getElementById('recurFilter').value;
-  const srcAB  = document.getElementById('srcAB').checked;
-  const srcFEC = document.getElementById('srcFEC').checked;
-  const srcVA  = document.getElementById('srcVA').checked;
-  const srcNGP = document.getElementById('srcNGP').checked;
+function runSearch() {
+  var name  = document.getElementById('nameSearch').value.trim();
+  var city  = document.getElementById('citySearch').value.trim().toUpperCase();
+  var state = document.getElementById('stateFilter').value;
+  var party = document.getElementById('partyFilter').value;
+  var minAmt   = parseFloat(document.getElementById('minAmount').value) || null;
+  var maxAmt   = parseFloat(document.getElementById('maxAmount').value) || null;
+  var minGifts = parseInt(document.getElementById('minGifts').value)    || null;
+  var maxGifts = parseInt(document.getElementById('maxGifts').value)    || null;
+  var minMax   = parseFloat(document.getElementById('minMax').value)    || null;
+  var maxMax   = parseFloat(document.getElementById('maxMax').value)    || null;
+  var matchF   = document.getElementById('matchFilter').value;
+  var recurF   = document.getElementById('recurFilter').value;
+  var srcAB  = document.getElementById('srcAB').checked;
+  var srcFEC = document.getElementById('srcFEC').checked;
+  var srcVA  = document.getElementById('srcVA').checked;
+  var srcNGP = document.getElementById('srcNGP').checked;
 
-  if (!name && !city && !state && !party && minAmt===null && maxAmt===null &&
-      minGifts===null && maxGifts===null && minMax===null && maxMax===null) {
+  if (!name && !city && !state && !party && minAmt === null && maxAmt === null &&
+      minGifts === null && maxGifts === null && minMax === null && maxMax === null) {
     alert('Please enter at least one search criterion.');
     return;
   }
@@ -320,59 +325,61 @@ async function runSearch() {
   document.getElementById('resultsSummary').textContent = 'Searching...';
   document.getElementById('resultsTotals').textContent = '';
 
-  try {
-    const q = name || city || 'a';
-    let url = API + '/search?q=' + encodeURIComponent(q) + '&limit=500';
-    if (state) url += '&state=' + state;
-    if (party) url += '&party=' + party;
+  var q = name || city || 'a';
+  var url = API + '/search?q=' + encodeURIComponent(q) + '&limit=500';
+  if (state) url += '&state=' + state;
+  if (party) url += '&party=' + party;
 
-    const r = await fetch(url);
-    const d = await r.json();
-    let donors = d.results || [];
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      var donors = d.results || [];
 
-    if (city)            donors = donors.filter(function(d){ return (d.City||'').toUpperCase().indexOf(city) >= 0; });
-    if (minAmt !== null) donors = donors.filter(function(d){ return (d.TotalAmount||0) >= minAmt; });
-    if (maxAmt !== null) donors = donors.filter(function(d){ return (d.TotalAmount||0) <= maxAmt; });
-    if (minGifts !== null) donors = donors.filter(function(d){ return (d.ContributionCount||0) >= minGifts; });
-    if (maxGifts !== null) donors = donors.filter(function(d){ return (d.ContributionCount||0) <= maxGifts; });
-    if (minMax !== null) donors = donors.filter(function(d){ return (d.MaxAmount||0) >= minMax; });
-    if (maxMax !== null) donors = donors.filter(function(d){ return (d.MaxAmount||0) <= maxMax; });
-    if (matchF === 'matched')   donors = donors.filter(function(d){ return d.Identification_Number; });
-    if (matchF === 'unmatched') donors = donors.filter(function(d){ return !d.Identification_Number; });
-    if (recurF === 'yes') donors = donors.filter(function(d){ return d.HasRecurring; });
-    if (recurF === 'no')  donors = donors.filter(function(d){ return !d.HasRecurring; });
-    if (!(srcAB && srcFEC && srcVA && srcNGP)) {
-      donors = donors.filter(function(d){
-        return (srcAB && d.HasABContrib) || (srcFEC && d.HasFedContrib) ||
-               (srcVA && d.HasStateContrib) || (srcNGP && d.HasDPVAContrib);
-      });
-    }
+      if (city)            donors = donors.filter(function(x) { return (x.City || '').toUpperCase().indexOf(city) >= 0; });
+      if (minAmt !== null) donors = donors.filter(function(x) { return (x.TotalAmount || 0) >= minAmt; });
+      if (maxAmt !== null) donors = donors.filter(function(x) { return (x.TotalAmount || 0) <= maxAmt; });
+      if (minGifts !== null) donors = donors.filter(function(x) { return (x.ContributionCount || 0) >= minGifts; });
+      if (maxGifts !== null) donors = donors.filter(function(x) { return (x.ContributionCount || 0) <= maxGifts; });
+      if (minMax !== null) donors = donors.filter(function(x) { return (x.MaxAmount || 0) >= minMax; });
+      if (maxMax !== null) donors = donors.filter(function(x) { return (x.MaxAmount || 0) <= maxMax; });
+      if (matchF === 'matched')   donors = donors.filter(function(x) { return x.Identification_Number; });
+      if (matchF === 'unmatched') donors = donors.filter(function(x) { return !x.Identification_Number; });
+      if (recurF === 'yes') donors = donors.filter(function(x) { return x.HasRecurring; });
+      if (recurF === 'no')  donors = donors.filter(function(x) { return !x.HasRecurring; });
+      if (!(srcAB && srcFEC && srcVA && srcNGP)) {
+        donors = donors.filter(function(x) {
+          return (srcAB && x.HasABContrib) || (srcFEC && x.HasFedContrib) ||
+                 (srcVA && x.HasStateContrib) || (srcNGP && x.HasDPVAContrib);
+        });
+      }
 
-    currentResults = donors;
-    renderTable();
-  } catch(e) {
-    document.getElementById('emptyMsg').textContent = 'Error connecting to API. Is run_api.py running?';
-  }
+      currentResults = donors;
+      renderTable();
+    })
+    .catch(function() {
+      document.getElementById('emptyMsg').textContent = 'Error connecting to API. Is run_api.py running?';
+    });
 }
 
-document.querySelectorAll('input, select').forEach(function(el){
-  el.addEventListener('keydown', function(e){ if(e.key==='Enter') runSearch(); });
+document.querySelectorAll('input, select').forEach(function(el) {
+  el.addEventListener('keydown', function(e) { if (e.key === 'Enter') runSearch(); });
 });
 
 function renderTable() {
-  var sorted = currentResults.slice().sort(function(a,b){
+  var sorted = currentResults.slice().sort(function(a, b) {
     var av = a[sortCol] != null ? a[sortCol] : '';
     var bv = b[sortCol] != null ? b[sortCol] : '';
-    if (!isNaN(parseFloat(av)) && !isNaN(parseFloat(bv)))
-      return ((parseFloat(bv)||0) - (parseFloat(av)||0)) * sortDir * -1;
+    if (!isNaN(parseFloat(av)) && !isNaN(parseFloat(bv))) {
+      return ((parseFloat(bv) || 0) - (parseFloat(av) || 0)) * sortDir * -1;
+    }
     return String(av).localeCompare(String(bv)) * sortDir;
   });
 
-  var totalGiving = currentResults.reduce(function(s,d){ return s + (d.TotalAmount||0); }, 0);
-  var totalGifts  = currentResults.reduce(function(s,d){ return s + (d.ContributionCount||0); }, 0);
+  var totalGiving = currentResults.reduce(function(s, x) { return s + (x.TotalAmount || 0); }, 0);
+  var totalGifts  = currentResults.reduce(function(s, x) { return s + (x.ContributionCount || 0); }, 0);
 
   document.getElementById('resultsSummary').innerHTML = '<strong>' + currentResults.length.toLocaleString() + '</strong> donors found';
-  document.getElementById('resultsTotals').innerHTML  = 'Total giving: <span>' + fmt(totalGiving) + '</span> &nbsp;|&nbsp; Total gifts: <span>' + totalGifts.toLocaleString() + '</span>';
+  document.getElementById('resultsTotals').innerHTML  = 'Total giving: <b>' + fmt(totalGiving) + '</b> &nbsp;|&nbsp; Total gifts: <b>' + totalGifts.toLocaleString() + '</b>';
 
   if (!currentResults.length) {
     document.getElementById('emptyMsg').textContent = 'No donors match your filters.';
@@ -384,38 +391,38 @@ function renderTable() {
   document.getElementById('emptyMsg').style.display = 'none';
   document.getElementById('donorTable').style.display = 'table';
 
-  document.getElementById('tableBody').innerHTML = sorted.map(function(d){
+  document.getElementById('tableBody').innerHTML = sorted.map(function(d) {
     var party = d.Party || '';
     var pc = party ? 'party-' + party : 'party-X';
     var sources = [
-      d.HasABContrib    ? '<span class="source-tag tag-AB">AB</span>'    : '',
-      d.HasFedContrib   ? '<span class="source-tag tag-FEC">FEC</span>'  : '',
+      d.HasABContrib    ? '<span class="source-tag tag-AB">AB</span>' : '',
+      d.HasFedContrib   ? '<span class="source-tag tag-FEC">FEC</span>' : '',
       d.HasStateContrib ? '<span class="source-tag tag-VA_CF">VA</span>' : '',
-      d.HasDPVAContrib  ? '<span class="source-tag tag-NGP">NGP</span>'  : '',
+      d.HasDPVAContrib  ? '<span class="source-tag tag-NGP">NGP</span>' : ''
     ].join('');
     var recur = d.HasRecurring ? ' <span style="color:#1a7a4e;font-size:11px">&#8635;</span>' : '';
     return '<tr onclick="openDrawer(' + d.DonorID + ')">'
       + '<td><strong>' + esc(d.LastName) + ', ' + esc(d.FirstName) + '</strong>' + recur + '</td>'
-      + '<td>' + esc(d.City||'&mdash;') + '</td>'
-      + '<td>' + esc(d.State||'&mdash;') + '</td>'
+      + '<td>' + esc(d.City || '') + '</td>'
+      + '<td>' + esc(d.State || '') + '</td>'
       + '<td class="right green mono">' + fmt(d.TotalAmount) + '</td>'
-      + '<td class="right">' + (d.ContributionCount||0) + '</td>'
+      + '<td class="right">' + (d.ContributionCount || 0) + '</td>'
       + '<td class="right mono">' + fmt(d.MaxAmount) + '</td>'
-      + '<td class="muted">' + (d.LastContribDate||'&mdash;') + '</td>'
+      + '<td class="muted">' + (d.LastContribDate || '') + '</td>'
       + '<td>' + sources + '</td>'
-      + '<td><span class="party-pill ' + pc + '">' + (party||'&mdash;') + '</span></td>'
-      + '<td class="muted mono">' + esc(d.Identification_Number||'&mdash;') + '</td>'
+      + '<td><span class="party-pill ' + pc + '">' + (party || '&mdash;') + '</span></td>'
+      + '<td class="muted mono">' + esc(d.Identification_Number || '') + '</td>'
       + '</tr>';
   }).join('');
 }
 
 function sortTable(col) {
-  if (sortCol === col) sortDir *= -1; else { sortCol = col; sortDir = -1; }
-  document.querySelectorAll('thead th').forEach(function(th){
+  if (sortCol === col) { sortDir *= -1; } else { sortCol = col; sortDir = -1; }
+  document.querySelectorAll('thead th').forEach(function(th) {
     th.classList.remove('sorted');
     th.querySelector('.sort-arrow').innerHTML = '&#8645;';
   });
-  var cols = ['LastName','City','State','TotalAmount','ContributionCount','MaxAmount','LastContribDate','','Party',''];
+  var cols = ['LastName', 'City', 'State', 'TotalAmount', 'ContributionCount', 'MaxAmount', 'LastContribDate', '', 'Party', ''];
   var idx = cols.indexOf(col);
   if (idx >= 0) {
     var th = document.querySelectorAll('thead th')[idx];
@@ -426,13 +433,14 @@ function sortTable(col) {
 }
 
 function clearFilters() {
-  ['nameSearch','citySearch','minAmount','maxAmount','minGifts','maxGifts','minMax','maxMax']
-    .forEach(function(id){ document.getElementById(id).value = ''; });
+  ['nameSearch', 'citySearch', 'minAmount', 'maxAmount', 'minGifts', 'maxGifts', 'minMax', 'maxMax'].forEach(function(id) {
+    document.getElementById(id).value = '';
+  });
   document.getElementById('stateFilter').value = 'VA';
   document.getElementById('partyFilter').value = '';
   document.getElementById('matchFilter').value = '';
   document.getElementById('recurFilter').value = '';
-  ['srcAB','srcFEC','srcVA','srcNGP'].forEach(function(id){ document.getElementById(id).checked = true; });
+  ['srcAB', 'srcFEC', 'srcVA', 'srcNGP'].forEach(function(id) { document.getElementById(id).checked = true; });
   currentResults = [];
   document.getElementById('donorTable').style.display = 'none';
   document.getElementById('emptyMsg').textContent = 'Use the filters on the left to find donors.';
@@ -441,67 +449,70 @@ function clearFilters() {
   document.getElementById('resultsTotals').textContent = '';
 }
 
-async function openDrawer(donorId) {
+function openDrawer(donorId) {
   document.getElementById('drawerName').textContent = 'Loading...';
   document.getElementById('drawerSub').textContent  = '';
   document.getElementById('drawerBody').innerHTML   = '<div class="loading-msg">Loading...</div>';
   document.getElementById('overlay').classList.add('open');
   document.getElementById('drawer').classList.add('open');
   allDrawerContribs = [];
-  try {
-    var results = await Promise.all([
-      fetch(API + '/donor/' + donorId),
-      fetch(API + '/donor/' + donorId + '/contributions')
-    ]);
-    var donor   = await results[0].json();
-    var contribs = await results[1].json();
+
+  Promise.all([
+    fetch(API + '/donor/' + donorId).then(function(r) { return r.json(); }),
+    fetch(API + '/donor/' + donorId + '/contributions').then(function(r) { return r.json(); })
+  ]).then(function(results) {
+    var donor   = results[0];
+    var contribs = results[1];
     allDrawerContribs = contribs.contributions || [];
     renderDrawer(donor, contribs);
-  } catch(e) {
+  }).catch(function() {
     document.getElementById('drawerBody').innerHTML = '<div class="loading-msg">Error loading data.</div>';
-  }
+  });
 }
 
 function renderDrawer(donor, contribs) {
-  document.getElementById('drawerName').textContent = (donor.FirstName||'') + ' ' + (donor.LastName||'');
+  document.getElementById('drawerName').textContent = (donor.FirstName || '') + ' ' + (donor.LastName || '');
   document.getElementById('drawerSub').textContent  = [donor.City, donor.State, donor.ZIP].filter(Boolean).join(', ');
+
   var breakdown = contribs.source_breakdown || {};
-  var srcBtns = '<button class="src-btn active" onclick="filterDrawerSource(null,this)">ALL (' + contribs.contribution_count + ')</button>'
-    + Object.keys(breakdown).map(function(src){
-        return '<button class="src-btn" onclick="filterDrawerSource(''+src+'',this)">'+src+' ('+breakdown[src].count+')</button>';
-      }).join('');
+  var srcBtns = '<button class="src-btn active" onclick="filterDrawerSource(null, this)">ALL (' + contribs.contribution_count + ')</button>';
+  Object.keys(breakdown).forEach(function(src) {
+    srcBtns += '<button class="src-btn" onclick="filterDrawerSource(\'' + src + '\', this)">' + src + ' (' + breakdown[src].count + ')</button>';
+  });
+
   var party = donor.Party || '';
   var pc = party ? 'party-' + party : 'party-X';
+
   document.getElementById('drawerBody').innerHTML =
     '<div class="stat-row">'
-    + '<div class="stat-box"><div class="stat-box-val green">'+fmt(donor.TotalAmount)+'</div><div class="stat-box-label">Total Given</div></div>'
-    + '<div class="stat-box"><div class="stat-box-val">'+fmt(donor.MaxAmount)+'</div><div class="stat-box-label">Largest Gift</div></div>'
-    + '<div class="stat-box"><div class="stat-box-val">'+(donor.ContributionCount||0)+'</div><div class="stat-box-label">Total Gifts</div></div>'
-    + '<div class="stat-box"><div class="stat-box-val"><span class="party-pill '+pc+'">'+(party||'&mdash;')+'</span></div><div class="stat-box-label">Party</div></div>'
+    + '<div class="stat-box"><div class="stat-box-val green">' + fmt(donor.TotalAmount) + '</div><div class="stat-box-label">Total Given</div></div>'
+    + '<div class="stat-box"><div class="stat-box-val">' + fmt(donor.MaxAmount) + '</div><div class="stat-box-label">Largest Gift</div></div>'
+    + '<div class="stat-box"><div class="stat-box-val">' + (donor.ContributionCount || 0) + '</div><div class="stat-box-label">Total Gifts</div></div>'
+    + '<div class="stat-box"><div class="stat-box-val"><span class="party-pill ' + pc + '">' + (party || '&mdash;') + '</span></div><div class="stat-box-label">Party</div></div>'
     + '</div>'
-    + '<div class="info-section"><div class="info-section-title">Donor Information</div>'
-    + '<div class="info-grid-2">'
-    + '<div><div class="info-item-label">Address</div><div class="info-item-value">'+esc(donor.Address||'&mdash;')+'</div></div>'
-    + '<div><div class="info-item-label">City / State / ZIP</div><div class="info-item-value">'+esc([donor.City,donor.State,donor.ZIP].filter(Boolean).join(', ')||'&mdash;')+'</div></div>'
-    + '<div><div class="info-item-label">Email</div><div class="info-item-value">'+esc(donor.PersonalEmail||'&mdash;')+'</div></div>'
-    + '<div><div class="info-item-label">Phone</div><div class="info-item-value">'+esc(donor.PreferredPhone||'&mdash;')+'</div></div>'
-    + '<div><div class="info-item-label">VAN ID</div><div class="info-item-value">'+esc(donor.Identification_Number||'Unmatched')+'</div></div>'
-    + '<div><div class="info-item-label">VA Support Score</div><div class="info-item-value">'+esc(donor.VASup||'&mdash;')+'</div></div>'
-    + '<div><div class="info-item-label">First Gift</div><div class="info-item-value">'+(donor.FirstContribDate||'&mdash;')+'</div></div>'
-    + '<div><div class="info-item-label">Last Gift</div><div class="info-item-value">'+(donor.LastContribDate||'&mdash;')+'</div></div>'
-    + '<div><div class="info-item-label">Recurring Donor</div><div class="info-item-value">'+(donor.HasRecurring ? 'Yes' : 'No')+'</div></div>'
-    + '<div><div class="info-item-label">Last Recipient</div><div class="info-item-value">'+esc(donor.LastRecipient||'&mdash;')+'</div></div>'
+    + '<div class="info-section"><div class="info-section-title">Donor Information</div><div class="info-grid-2">'
+    + '<div><div class="info-item-label">Address</div><div class="info-item-value">' + esc(donor.Address || '&mdash;') + '</div></div>'
+    + '<div><div class="info-item-label">City / State / ZIP</div><div class="info-item-value">' + esc([donor.City, donor.State, donor.ZIP].filter(Boolean).join(', ') || '&mdash;') + '</div></div>'
+    + '<div><div class="info-item-label">Email</div><div class="info-item-value">' + esc(donor.PersonalEmail || '&mdash;') + '</div></div>'
+    + '<div><div class="info-item-label">Phone</div><div class="info-item-value">' + esc(donor.PreferredPhone || '&mdash;') + '</div></div>'
+    + '<div><div class="info-item-label">VAN ID</div><div class="info-item-value">' + esc(donor.Identification_Number || 'Unmatched') + '</div></div>'
+    + '<div><div class="info-item-label">VA Support Score</div><div class="info-item-value">' + esc(donor.VASup || '&mdash;') + '</div></div>'
+    + '<div><div class="info-item-label">First Gift</div><div class="info-item-value">' + (donor.FirstContribDate || '&mdash;') + '</div></div>'
+    + '<div><div class="info-item-label">Last Gift</div><div class="info-item-value">' + (donor.LastContribDate || '&mdash;') + '</div></div>'
+    + '<div><div class="info-item-label">Recurring Donor</div><div class="info-item-value">' + (donor.HasRecurring ? 'Yes' : 'No') + '</div></div>'
+    + '<div><div class="info-item-label">Last Recipient</div><div class="info-item-value">' + esc(donor.LastRecipient || '&mdash;') + '</div></div>'
     + '</div></div>'
     + '<div class="info-section"><div class="info-section-title">Contribution History</div>'
-    + '<div class="source-filter-row" id="srcFilterRow">'+srcBtns+'</div>'
+    + '<div class="source-filter-row" id="srcFilterRow">' + srcBtns + '</div>'
     + '<div id="contribMiniWrap"></div></div>';
+
   renderDrawerContribs(allDrawerContribs);
 }
 
 function filterDrawerSource(src, btn) {
-  document.querySelectorAll('#srcFilterRow .src-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.querySelectorAll('#srcFilterRow .src-btn').forEach(function(b) { b.classList.remove('active'); });
   btn.classList.add('active');
-  renderDrawerContribs(src ? allDrawerContribs.filter(function(c){ return c.Source === src; }) : allDrawerContribs);
+  renderDrawerContribs(src ? allDrawerContribs.filter(function(c) { return c.Source === src; }) : allDrawerContribs);
 }
 
 function renderDrawerContribs(list) {
@@ -509,18 +520,21 @@ function renderDrawerContribs(list) {
     document.getElementById('contribMiniWrap').innerHTML = '<div style="color:#888;padding:14px;text-align:center">No contributions</div>';
     return;
   }
+  var rows = list.map(function(c) {
+    return '<tr>'
+      + '<td>' + (c.ContributionDate || '') + '</td>'
+      + '<td style="color:#1a7a4e;font-weight:500">' + fmt(c.Amount) + '</td>'
+      + '<td><span class="source-tag tag-' + c.Source + '">' + c.Source + '</span></td>'
+      + '<td>' + esc(c.Recipient || '') + '</td>'
+      + '<td>' + (c.AccountType || '') + '</td>'
+      + '<td>' + (c.Cycle || '') + '</td>'
+      + '<td>' + (c.IsRecurring ? '&#8635;' : '') + '</td>'
+      + '</tr>';
+  }).join('');
   document.getElementById('contribMiniWrap').innerHTML =
-    '<table class="contrib-mini"><thead><tr><th>Date</th><th>Amount</th><th>Source</th><th>Recipient</th><th>Account</th><th>Cycle</th><th>Recur</th></tr></thead><tbody>'
-    + list.map(function(c){
-        return '<tr><td>'+(c.ContributionDate||'&mdash;')+'</td>'
-          + '<td style="color:#1a7a4e;font-weight:500">'+fmt(c.Amount)+'</td>'
-          + '<td><span class="source-tag tag-'+c.Source+'">'+c.Source+'</span></td>'
-          + '<td>'+esc(c.Recipient||'&mdash;')+'</td>'
-          + '<td>'+(c.AccountType||'&mdash;')+'</td>'
-          + '<td>'+(c.Cycle||'&mdash;')+'</td>'
-          + '<td>'+(c.IsRecurring ? '&#8635;' : '')+'</td></tr>';
-      }).join('')
-    + '</tbody></table>';
+    '<table class="contrib-mini"><thead><tr>'
+    + '<th>Date</th><th>Amount</th><th>Source</th><th>Recipient</th><th>Account</th><th>Cycle</th><th>Recur</th>'
+    + '</tr></thead><tbody>' + rows + '</tbody></table>';
 }
 
 function closeDrawer() {
@@ -535,14 +549,15 @@ function exportCSV() {
     'FirstContribDate','LastContribDate','Party','VASup',
     'HasRecurring','HasFedContrib','HasStateContrib','HasDPVAContrib','HasABContrib',
     'Identification_Number','PersonalEmail','PreferredPhone','LastRecipient'];
-  var rows = currentResults.map(function(d){
-    return headers.map(function(h){
+  var rows = currentResults.map(function(d) {
+    return headers.map(function(h) {
       var v = d[h] != null ? d[h] : '';
       var s = String(v);
-      return (s.indexOf(',')>=0 || s.indexOf('"')>=0 || s.indexOf('\n')>=0) ? '"'+s.replace(/"/g,'""')+'"' : s;
+      return (s.indexOf(',') >= 0 || s.indexOf('"') >= 0) ? '"' + s.replace(/"/g, '""') + '"' : s;
     }).join(',');
   });
-  var blob = new Blob([[headers.join(',')].concat(rows).join('\n')], {type:'text/csv'});
+  var csv = headers.join(',') + '\n' + rows.join('\n');
+  var blob = new Blob([csv], {type: 'text/csv'});
   var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'DPVA_Donors_' + new Date().toISOString().slice(0,10) + '.csv';
@@ -551,11 +566,11 @@ function exportCSV() {
 
 function fmt(n) {
   if (!n && n !== 0) return '&mdash;';
-  return '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:0});
+  return '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
 }
 function esc(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-<\/script>
+</script>
 </body>
 </html>
