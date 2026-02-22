@@ -19,7 +19,7 @@ header p  { font-size: 12px; opacity: 0.75; margin-top: 2px; }
 
 .layout { display: flex; min-height: calc(100vh - 64px); }
 
-.filter-panel { width: 290px; min-width: 270px; background: white; border-right: 1px solid #dde3ef; padding: 18px 16px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; }
+.filter-panel { width: 260px; min-width: 240px; background: white; border-right: 1px solid #dde3ef; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; }
 .panel-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #6b7a99; padding-bottom: 8px; border-bottom: 2px solid #1a3a6e; }
 .filter-group { display: flex; flex-direction: column; gap: 5px; }
 .filter-label { font-size: 12px; font-weight: 500; color: #444; }
@@ -41,7 +41,7 @@ input:focus, select:focus { border-color: #1a3a6e; background: white; }
 .btn-print { background: #6b4ea8; color: white; }
 .btn-print:hover { background: #533c84; }
 
-.source-checks { display: flex; flex-direction: column; gap: 5px; }
+.source-checks { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
 .check-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #333; cursor: pointer; }
 .check-row input { width: auto; cursor: pointer; }
 
@@ -152,6 +152,12 @@ td.muted { color: #888; font-size: 12px; }
       <input type="text" id="citySearch" placeholder="e.g. Norfolk, Richmond...">
     </div>
     <div class="filter-group">
+      <div class="filter-label">County (multi-select)</div>
+      <select id="countyFilter" multiple size="4" style="height:72px;font-size:11px">
+      </select>
+      <small style="color:#888;font-size:10px">Ctrl+click for multiple</small>
+    </div>
+    <div class="filter-group">
       <div class="filter-label">State</div>
       <select id="stateFilter">
         <option value="">All States</option>
@@ -200,12 +206,7 @@ td.muted { color: #888; font-size: 12px; }
         <label class="check-row"><input type="checkbox" id="srcNGP" checked> DPVA / NGP</label>
       </div>
     </div>
-    <div class="filter-group">
-      <div class="filter-label">County (multi-select)</div>
-      <select id="countyFilter" multiple size="5" style="height:100px">
-      </select>
-      <small style="color:#888;font-size:11px">Ctrl+click to select multiple</small>
-    </div>
+
     <div class="filter-group">
       <div class="filter-label">VASup Score</div>
       <div class="range-row">
