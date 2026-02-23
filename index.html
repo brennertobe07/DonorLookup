@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -142,6 +142,7 @@ td.muted { color: #888; font-size: 12px; }
 <div class="layout">
   <div class="filter-panel">
     <div class="panel-title">Search &amp; Filter</div>
+    <button id="searchBtnTop" onclick="runSearch()" style="background:#1a3a6e;color:white;border:none;border-radius:5px;padding:6px;font-size:12px;font-weight:600;cursor:pointer;width:100%;margin-bottom:4px;">&#128269; Search</button>
 
     <div class="filter-group">
       <div class="filter-label">Name Search</div>
@@ -159,12 +160,12 @@ td.muted { color: #888; font-size: 12px; }
     </div>
     <div class="filter-group">
       <div class="filter-label">Party</div>
-      <select id="partyFilter">
-        <option value="">All Parties</option>
-        <option value="D">Democrat (D)</option>
-        <option value="R">Republican (R)</option>
-        <option value="I">Independent (I)</option>
-      </select>
+      <div class="source-checks" style="flex-direction:row;gap:10px;">
+        <label class="check-row"><input type="checkbox" id="partyD" checked> D</label>
+        <label class="check-row"><input type="checkbox" id="partyR" checked> R</label>
+        <label class="check-row"><input type="checkbox" id="partyI" checked> I</label>
+        <label class="check-row"><input type="checkbox" id="partyNone" checked> None</label>
+      </div>
     </div>
     <div class="filter-group">
       <div class="filter-label">State</div>
@@ -233,8 +234,9 @@ td.muted { color: #888; font-size: 12px; }
         <div class="results-totals" id="resultsTotals"></div>
       </div>
       <div class="export-btns">
+        <button class="btn btn-sm btn-clear" onclick="clearFilters()" style="background:none;border:1px solid #1a3a6e;color:#1a3a6e;">&#10005; Clear</button>
         <button class="btn btn-sm btn-export" onclick="exportCSV()">Export CSV</button>
-        <button class="btn btn-sm btn-print"  onclick="window.print()">Print</button>
+        <button class="btn btn-sm btn-print"  onclick="doPrint()">Print</button>
       </div>
     </div>
     <div class="table-wrap">
@@ -471,7 +473,7 @@ function clearFilters() {
     document.getElementById(id).value = '';
   });
   document.getElementById('stateFilter').value = 'VA';
-  document.getElementById('partyFilter').value = '';
+  ['partyD','partyR','partyI','partyNone'].forEach(function(id){ document.getElementById(id).checked = true; });
   document.getElementById('hasStateID').checked = false;
   var countySelect = document.getElementById('countyFilter');
   for (var i = 0; i < countySelect.options.length; i++) { countySelect.options[i].selected = false; }
@@ -574,6 +576,44 @@ function renderDrawerContribs(list) {
 function closeDrawer() {
   document.getElementById('overlay').classList.remove('open');
   document.getElementById('drawer').classList.remove('open');
+}
+
+function doPrint() {
+  if (!currentResults.length) { alert('No results to print.'); return; }
+  var rows = currentResults.map(function(d) {
+    return [
+      d.Identification_Number || '',
+      (d.LastName || '') + ', ' + (d.FirstName || ''),
+      d.Address || '',
+      d.City || '',
+      d.State || '',
+      d.ZIP || '',
+      d.PreferredPhone || '',
+      d.TotalAmount != null ? '$' + Number(d.TotalAmount).toLocaleString() : '',
+      d.ContributionCount || '',
+      d.MaxAmount != null ? '$' + Number(d.MaxAmount).toLocaleString() : '',
+      d.LastContribDate || '',
+      d.LastRecipient || ''
+    ];
+  });
+  var headers = ['State ID','Name','Address','City','ST','ZIP','Phone','Total Given','# Gifts','Max Gift','Last Gift','Last Recipient'];
+  var colWidths = [12, 25, 30, 18, 4, 7, 14, 12, 8, 10, 12, 30];
+  function pad(str, len) { str = String(str); return str.length > len ? str.slice(0,len-1)+'…' : str + ' '.repeat(len - str.length); }
+  var header = headers.map(function(h,i){ return pad(h, colWidths[i]); }).join('  ');
+  var divider = colWidths.map(function(w){ return '-'.repeat(w); }).join('  ');
+  var lines = [header, divider].concat(rows.map(function(r){
+    return r.map(function(v,i){ return pad(v, colWidths[i]); }).join('  ');
+  }));
+  var win = window.open('', '_blank');
+  win.document.write('<html><head><title>DPVA Donor Export</title>');
+  win.document.write('<style>body{font-family:monospace;font-size:11px;white-space:pre;padding:20px;} @media print{body{font-size:9px;}}</style>');
+  win.document.write('</head><body>');
+  win.document.write('DPVA Donor Research — ' + new Date().toLocaleDateString() + '\n');
+  win.document.write('Showing ' + currentResults.length + ' donors\n\n');
+  win.document.write(lines.join('\n'));
+  win.document.write('</body></html>');
+  win.document.close();
+  win.print();
 }
 
 function exportCSV() {
