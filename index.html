@@ -223,8 +223,7 @@ td.muted { color: #888; font-size: 12px; }
     </div>
 
 
-    <button class="btn btn-primary" onclick="runSearch()">Search</button>
-    <button class="btn btn-secondary" onclick="clearFilters()">Clear Filters</button>
+
   </div>
 
   <div class="main">
@@ -324,7 +323,18 @@ function runSearch() {
   var name  = document.getElementById('nameSearch').value.trim();
   var city  = document.getElementById('citySearch').value.trim().toUpperCase();
   var state = document.getElementById('stateFilter').value;
-  // party handled via checkboxes below
+  // Party checkboxes
+  var partyChecks = {D: document.getElementById('partyD').checked, R: document.getElementById('partyR').checked, I: document.getElementById('partyI').checked, None: document.getElementById('partyNone').checked};
+  var allChecked = partyChecks.D && partyChecks.R && partyChecks.I && partyChecks.None;
+  var party = '';
+  if (!allChecked) {
+    var selected = [];
+    if (partyChecks.D) selected.push('D');
+    if (partyChecks.R) selected.push('R');
+    if (partyChecks.I) selected.push('I');
+    if (partyChecks.None) selected.push('none');
+    party = selected.join(',');
+  }
   var minAmt   = parseFloat(document.getElementById('minAmount').value) || null;
   var maxAmt   = parseFloat(document.getElementById('maxAmount').value) || null;
   var minGifts = parseInt(document.getElementById('minGifts').value)    || null;
@@ -634,17 +644,4 @@ function exportCSV() {
   var blob = new Blob([csv], {type: 'text/csv'});
   var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'DPVA_Donors_' + new Date().toISOString().slice(0,10) + '.csv';
-  a.click();
-}
-
-function fmt(n) {
-  if (!n && n !== 0) return '&mdash;';
-  return '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
-}
-function esc(s) {
-  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-</script>
-</body>
-</html>
+  a.download = 'DP
