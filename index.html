@@ -324,7 +324,7 @@ function runSearch() {
   var name  = document.getElementById('nameSearch').value.trim();
   var city  = document.getElementById('citySearch').value.trim().toUpperCase();
   var state = document.getElementById('stateFilter').value;
-  var party = document.getElementById('partyFilter').value;
+  // party handled via checkboxes below
   var minAmt   = parseFloat(document.getElementById('minAmount').value) || null;
   var maxAmt   = parseFloat(document.getElementById('maxAmount').value) || null;
   var minGifts = parseInt(document.getElementById('minGifts').value)    || null;
