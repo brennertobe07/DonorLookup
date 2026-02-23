@@ -287,9 +287,11 @@ var sortDir = -1;
 var allDrawerContribs = [];
 
 function checkHealth() {
+  console.log('Checking health at:', API + '/health');
   fetch(API + '/health')
-    .then(function(r) { return r.json(); })
+    .then(function(r) { console.log('Health response status:', r.status); return r.json(); })
     .then(function(d) {
+      console.log('Health data:', JSON.stringify(d));
       if (d.status === 'ok') {
         document.getElementById('statusDot').className = 'dot ok';
         document.getElementById('statusText').textContent = 'Connected - ' + d.total_donors.toLocaleString() + ' donors';
@@ -644,4 +646,17 @@ function exportCSV() {
   var blob = new Blob([csv], {type: 'text/csv'});
   var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'DP
+  a.download = 'DPVA_Donors_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+}
+
+function fmt(n) {
+  if (!n && n !== 0) return '&mdash;';
+  return '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
+}
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
