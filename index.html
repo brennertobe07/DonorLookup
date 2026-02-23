@@ -158,19 +158,19 @@ td.muted { color: #888; font-size: 12px; }
       <small style="color:#888;font-size:10px">Ctrl+click for multiple</small>
     </div>
     <div class="filter-group">
-      <div class="filter-label">State</div>
-      <select id="stateFilter">
-        <option value="">All States</option>
-        <option value="VA" selected>Virginia</option>
-      </select>
-    </div>
-    <div class="filter-group">
       <div class="filter-label">Party</div>
       <select id="partyFilter">
         <option value="">All Parties</option>
         <option value="D">Democrat (D)</option>
         <option value="R">Republican (R)</option>
         <option value="I">Independent (I)</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <div class="filter-label">State</div>
+      <select id="stateFilter">
+        <option value="">All States</option>
+        <option value="VA" selected>Virginia</option>
       </select>
     </div>
     <div class="filter-group">
@@ -247,6 +247,7 @@ td.muted { color: #888; font-size: 12px; }
           <tr>
             <th onclick="sortTable('LastName')">Name <span class="sort-arrow">&#8645;</span></th>
             <th onclick="sortTable('City')">City <span class="sort-arrow">&#8645;</span></th>
+            <th onclick="sortTable('Locality')">County <span class="sort-arrow">&#8645;</span></th>
             <th onclick="sortTable('State')">ST <span class="sort-arrow">&#8645;</span></th>
             <th onclick="sortTable('TotalAmount')" class="sorted">Total Given <span class="sort-arrow">&#8595;</span></th>
             <th onclick="sortTable('ContributionCount')"># Gifts <span class="sort-arrow">&#8645;</span></th>
@@ -436,6 +437,7 @@ function renderTable(totalCount) {
     return '<tr onclick="openDrawer(' + d.DonorID + ')">'
       + '<td><strong>' + esc(d.LastName) + ', ' + esc(d.FirstName) + '</strong>' + recur + '</td>'
       + '<td>' + esc(d.City || '') + '</td>'
+      + '<td class="locality-cell">' + esc((d.Locality || '').replace(/ COUNTY$/,'').replace(/ CITY$/,'')) + '</td>'
       + '<td>' + esc(d.State || '') + '</td>'
       + '<td class="right green mono">' + fmt(d.TotalAmount) + '</td>'
       + '<td class="right">' + (d.ContributionCount || 0) + '</td>'
@@ -528,11 +530,11 @@ function renderDrawer(donor, contribs) {
     + '<div><div class="info-item-label">City / State / ZIP</div><div class="info-item-value">' + esc([donor.City, donor.State, donor.ZIP].filter(Boolean).join(', ') || '&mdash;') + '</div></div>'
     + '<div><div class="info-item-label">Email</div><div class="info-item-value">' + esc(donor.PersonalEmail || '&mdash;') + '</div></div>'
     + '<div><div class="info-item-label">Phone</div><div class="info-item-value">' + esc(donor.PreferredPhone || '&mdash;') + '</div></div>'
-    + '<div><div class="info-item-label">VAN ID</div><div class="info-item-value">' + esc(donor.Identification_Number || 'Unmatched') + '</div></div>'
+    + '<div><div class="info-item-label">State ID</div><div class="info-item-value">' + esc(donor.Identification_Number || 'Unmatched') + '</div></div>'
     + '<div><div class="info-item-label">VA Support Score</div><div class="info-item-value">' + esc(donor.VASup || '&mdash;') + '</div></div>'
+    + '<div><div class="info-item-label">County / Locality</div><div class="info-item-value">' + esc(donor.Locality || '&mdash;') + '</div></div>'
     + '<div><div class="info-item-label">First Gift</div><div class="info-item-value">' + (donor.FirstContribDate || '&mdash;') + '</div></div>'
     + '<div><div class="info-item-label">Last Gift</div><div class="info-item-value">' + (donor.LastContribDate || '&mdash;') + '</div></div>'
-    + '<div><div class="info-item-label">Recurring Donor</div><div class="info-item-value">' + (donor.HasRecurring ? 'Yes' : 'No') + '</div></div>'
     + '<div><div class="info-item-label">Last Recipient</div><div class="info-item-value">' + esc(donor.LastRecipient || '&mdash;') + '</div></div>'
     + '</div></div>'
     + '<div class="info-section"><div class="info-section-title">Contribution History</div>'
