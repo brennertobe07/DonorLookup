@@ -563,12 +563,11 @@ function renderDrawerContribs(list) {
       + '<td>' + esc(c.Recipient || '') + '</td>'
       + '<td>' + (c.AccountType || '') + '</td>'
       + '<td>' + (c.Cycle || '') + '</td>'
-      + '<td>' + (c.IsRecurring ? '&#8635;' : '') + '</td>'
       + '</tr>';
   }).join('');
   document.getElementById('contribMiniWrap').innerHTML =
     '<table class="contrib-mini"><thead><tr>'
-    + '<th>Date</th><th>Amount</th><th>Source</th><th>Recipient</th><th>Account</th><th>Cycle</th><th>Recur</th>'
+    + '<th>Date</th><th>Amount</th><th>Source</th><th>Recipient</th><th>Account</th><th>Cycle</th>'
     + '</tr></thead><tbody>' + rows + '</tbody></table>';
 }
 
