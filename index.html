@@ -310,7 +310,7 @@ function loadCounties() {
       (d.counties || []).forEach(function(c) {
         var opt = document.createElement('option');
         opt.value = c;
-        opt.textContent = c.replace(' COUNTY', '').replace(' CITY', '');
+        opt.textContent = c;
         sel.appendChild(opt);
       });
     })
@@ -437,7 +437,7 @@ function renderTable(totalCount) {
     return '<tr onclick="openDrawer(' + d.DonorID + ')">'
       + '<td><strong>' + esc(d.LastName) + ', ' + esc(d.FirstName) + '</strong>' + recur + '</td>'
       + '<td>' + esc(d.City || '') + '</td>'
-      + '<td class="locality-cell">' + esc((d.Locality || '').replace(/ COUNTY$/,'').replace(/ CITY$/,'')) + '</td>'
+      + '<td class="locality-cell">' + esc(d.Locality || '') + '</td>'
       + '<td>' + esc(d.State || '') + '</td>'
       + '<td class="right green mono">' + fmt(d.TotalAmount) + '</td>'
       + '<td class="right">' + (d.ContributionCount || 0) + '</td>'
@@ -526,13 +526,13 @@ function renderDrawer(donor, contribs) {
     + '<div class="stat-box"><div class="stat-box-val"><span class="party-pill ' + pc + '">' + (party || '&mdash;') + '</span></div><div class="stat-box-label">Party</div></div>'
     + '</div>'
     + '<div class="info-section"><div class="info-section-title">Donor Information</div><div class="info-grid-2">'
-    + '<div><div class="info-item-label">Address</div><div class="info-item-value">' + esc(donor.Address || '&mdash;') + '</div></div>'
-    + '<div><div class="info-item-label">City / State / ZIP</div><div class="info-item-value">' + esc([donor.City, donor.State, donor.ZIP].filter(Boolean).join(', ') || '&mdash;') + '</div></div>'
-    + '<div><div class="info-item-label">Email</div><div class="info-item-value">' + esc(donor.PersonalEmail || '&mdash;') + '</div></div>'
-    + '<div><div class="info-item-label">Phone</div><div class="info-item-value">' + esc(donor.PreferredPhone || '&mdash;') + '</div></div>'
+    + '<div><div class="info-item-label">Address</div><div class="info-item-value">' + (donor.Address ? esc(donor.Address) : '&mdash;') + '</div></div>'
+    + '<div><div class="info-item-label">City / State / ZIP</div><div class="info-item-value">' + ([donor.City, donor.State, donor.ZIP].filter(Boolean).join(', ') || '&mdash;') + '</div></div>'
+    + '<div><div class="info-item-label">Email</div><div class="info-item-value">' + (donor.PersonalEmail ? esc(donor.PersonalEmail) : '&mdash;') + '</div></div>'
+    + '<div><div class="info-item-label">Phone</div><div class="info-item-value">' + (donor.PreferredPhone ? esc(donor.PreferredPhone) : '&mdash;') + '</div></div>'
     + '<div><div class="info-item-label">State ID</div><div class="info-item-value">' + esc(donor.Identification_Number || 'Unmatched') + '</div></div>'
-    + '<div><div class="info-item-label">VA Support Score</div><div class="info-item-value">' + esc(donor.VASup || '&mdash;') + '</div></div>'
-    + '<div><div class="info-item-label">County / Locality</div><div class="info-item-value">' + esc(donor.Locality || '&mdash;') + '</div></div>'
+    + '<div><div class="info-item-label">VA Support Score</div><div class="info-item-value">' + (donor.VASup ? esc(donor.VASup) : '&mdash;') + '</div></div>'
+    + '<div><div class="info-item-label">County / Locality</div><div class="info-item-value">' + (donor.Locality ? esc(donor.Locality) : '&mdash;') + '</div></div>'
     + '<div><div class="info-item-label">First Gift</div><div class="info-item-value">' + (donor.FirstContribDate || '&mdash;') + '</div></div>'
     + '<div><div class="info-item-label">Last Gift</div><div class="info-item-value">' + (donor.LastContribDate || '&mdash;') + '</div></div>'
     + '<div><div class="info-item-label">Last Recipient</div><div class="info-item-value">' + esc(donor.LastRecipient || '&mdash;') + '</div></div>'
